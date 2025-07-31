@@ -30,22 +30,6 @@
       border-top-left-radius: 20px;
       border-top-right-radius: 20px;
     }
-    .user_img {
-      height: 50px;
-      width: 50px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-    .online_icon {
-      background: #4cd137;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      position: absolute;
-      top: 35px;
-      left: 40px;
-      border: 1.5px solid white;
-    }
     .user_info span {
       font-size: 20px;
       font-weight: bold;
@@ -132,11 +116,7 @@
         <div class="card">
           <div class="card-header msg_head">
             <div class="d-flex bd-highlight align-items-center">
-              <div class="img_cont position-relative">
-                <img src="https://cdn-icons-png.flaticon.com/512/387/387569.png" class="rounded-circle user_img">
-                <span class="online_icon"></span>
-              </div>
-              <div class="user_info ml-3">
+              <div class="user_info ml-2">
                 <span>Medical Chatbot</span>
                 <p>Ask health-related questions. Speak or type.</p>
               </div>
@@ -210,9 +190,6 @@
             <div class="msg_cotainer_send">${rawText}
               <span class="msg_time_send">${str_time}</span>
             </div>
-            <div class="img_cont_msg">
-              <img src="https://i.ibb.co/d5b84Xw/Untitled-design.png" class="rounded-circle user_img_msg">
-            </div>
           </div>
         `;
 
@@ -229,9 +206,6 @@
 
           var botHtml = `
             <div class="d-flex justify-content-start mb-4">
-              <div class="img_cont_msg">
-                <img src="https://cdn-icons-png.flaticon.com/512/387/387569.png" class="rounded-circle user_img_msg">
-              </div>
               <div class="msg_cotainer">
                 ${data}
                 <span class="msg_time">${str_time}</span>

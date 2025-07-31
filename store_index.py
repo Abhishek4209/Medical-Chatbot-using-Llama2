@@ -1,33 +1,47 @@
-from src.helper import *
-from langchain_community.vectorstores import Pinecone
-import pinecone
 from dotenv import load_dotenv
 import os
-import sys
+from src.helper import load_pdf, filter_to_minimal_docs, text_split, download_hugging_face_embeddings
+from pinecone import Pinecone
+from pinecone import ServerlessSpec 
+from langchain_pinecone import PineconeVectorStore
 
 load_dotenv()
 
 
 PINECONE_API_KEY=os.environ.get('PINECONE_API_KEY')
-PINECONE_API_ENV=os.environ.get('PINECONE_API_ENV')
+OPENAI_API_KEY=os.environ.get('OPENAI_API_KEY')
+
+os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
+os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 
-extracted_data = load_pdf("data/")
-text_chunks = text_split(extracted_data)
+extracted_data=load_pdf(data='data/')
+filter_data = filter_to_minimal_docs(extracted_data)
+text_chunks=text_split(filter_data)
+
 embeddings = download_hugging_face_embeddings()
 
-# print(PINECONE_API_KEY)
-# print(PINECONE_API_ENV)
+pinecone_api_key = PINECONE_API_KEY
+pc = Pinecone(api_key=pinecone_api_key)
 
 
-#Initializing the Pinecone
-pinecone.init(api_key=PINECONE_API_KEY,
-            environment=PINECONE_API_ENV)
+## change if desired
+index_name = "medical-chatbot"  
+
+if not pc.has_index(index_name):
+    pc.create_index(
+        name=index_name,
+        dimension=384,
+        metric="cosine",
+        spec=ServerlessSpec(cloud="aws", region="us-east-1"),
+    )
+
+index = pc.Index(index_name)
 
 
-index_name="medical-bot"
-
-#Creating Embeddings for Each of The Text Chunks & storing
-docsearch=Pinecone.from_texts([t.page_content for t in text_chunks], embeddings, index_name=index_name)
-
+docsearch = PineconeVectorStore.from_documents(
+    documents=text_chunks,
+    index_name=index_name,
+    embedding=embeddings, 
+)
 
